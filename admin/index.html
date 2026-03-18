@@ -750,6 +750,10 @@ body {
         </select>
       </div>
     </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(201,168,76,0.08);border-radius:10px;border:1px solid rgba(201,168,76,0.15)">
+      <input type="checkbox" id="prod-featured" style="width:18px;height:18px;cursor:pointer">
+      <label for="prod-featured" style="cursor:pointer;font-size:14px">✦ Feature this item on homepage</label>
+    </div>
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn-primary" onclick="submitProduct()">Add Product</button>
@@ -956,6 +960,8 @@ function openAddModal() {
   document.getElementById('prod-name').value  = '';
   document.getElementById('prod-desc').value  = '';
   document.getElementById('prod-price').value = '';
+  document.getElementById('prod-cat').value   = 'Gadgets & Tech';
+  document.getElementById('prod-featured').checked = false;
   document.getElementById('addModal').classList.add('open');
 }
 
@@ -989,10 +995,11 @@ async function submitProduct() {
   const desc  = document.getElementById('prod-desc').value.trim();
   const price = document.getElementById('prod-price').value;
   const cat   = document.getElementById('prod-cat').value;
+  const featured = document.getElementById('prod-featured').checked;
 
   if (!name || !price) { toast('Name and price are required.', 'error'); return; }
 
-  const body = { name, description: desc, price, category: cat,
+  const body = { name, description: desc, price, category: cat, featured,
                  imageBase64: imageData, imageType };
 
   try {
@@ -1009,7 +1016,7 @@ async function submitProduct() {
   } catch {
     // Offline / dev mode — simulate add
     const fake = { id: crypto.randomUUID(), name, description: desc,
-                   price: parseFloat(price), category: cat,
+                   price: parseFloat(price), category: cat, featured,
                    image: imageData ? `data:${imageType};base64,${imageData}` : null,
                    createdAt: new Date().toISOString(), active: true };
     products.push(fake);

@@ -58,7 +58,7 @@ export default async function handler(req, res) {
 
   // ── POST /api/products  (create) ──────────────────────────────────────────
   if (req.method === 'POST') {
-    const { name, description, price, category, imageBase64, imageType } = req.body || {};
+    const { name, description, price, category, imageBase64, imageType, featured } = req.body || {};
 
     if (!name || !price) {
       return res.status(400).json({ error: 'name and price are required' });
@@ -74,6 +74,7 @@ export default async function handler(req, res) {
       // Phase 1: image stored as base64 data-URL in KV.
       // Phase 2: upload to Supabase Storage, store the public URL here.
       image:       imageBase64 ? `data:${imageType};base64,${imageBase64}` : null,
+      featured:    featured === true || featured === 'true',
       createdAt:   new Date().toISOString(),
       active:      true,
     };

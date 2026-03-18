@@ -1160,69 +1160,8 @@ footer {
     <a href="catalogue.html" class="see-all">View all products →</a>
   </div>
 
-  <div class="featured-grid">
-    <!-- MacBook Neo -->
-    <div class="product-card hero-card reveal">
-      <div class="card-image-wrap">
-        <div class="card-glow-blue"></div>
-        <span class="card-badge badge-preorder">Pre-Order</span>
-        <span class="product-emoji">💻</span>
-      </div>
-      <div class="card-body">
-        <p class="card-category">Apple · Gadgets</p>
-        <h3 class="card-name">MacBook Neo</h3>
-        <p class="card-desc">M5 Ultra · 5.8mm thin · 36-hour battery life. The most powerful MacBook ever engineered — reserve yours before they're gone.</p>
-        <div class="card-footer">
-          <div class="card-price">
-            <small>From</small>
-            $1,999
-          </div>
-          <a href="catalogue.html" class="card-btn">Pre-Order →</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dreamscraper Book -->
-    <div class="product-card book-card reveal">
-      <div class="card-image-wrap">
-        <div class="card-glow-purple"></div>
-        <span class="card-badge badge-new">New</span>
-        <span class="product-emoji">📖</span>
-      </div>
-      <div class="card-body">
-        <p class="card-category">Books · Original</p>
-        <h3 class="card-name">Dreamscraper</h3>
-        <p class="card-desc">Volume I of our original book series. A meditation on ambition, craft, and the architecture of extraordinary lives.</p>
-        <div class="card-footer">
-          <div class="card-price">
-            <small>Hardcover</small>
-            $42
-          </div>
-          <a href="catalogue.html" class="card-btn">Get a Copy →</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Saladmaster -->
-    <div class="product-card kitchen-card reveal">
-      <div class="card-image-wrap">
-        <div class="card-glow-green"></div>
-        <span class="card-badge badge-exclusive">Exclusive</span>
-        <span class="product-emoji">🥘</span>
-      </div>
-      <div class="card-body">
-        <p class="card-category">Saladmaster · Kitchen</p>
-        <h3 class="card-name">Titanium Cookware Set</h3>
-        <p class="card-desc">The last cookware you'll ever buy. Surgical-grade titanium. Vapor-seal technology. A lifetime guarantee.</p>
-        <div class="card-footer">
-          <div class="card-price">
-            <small>From</small>
-            $380
-          </div>
-          <a href="catalogue.html" class="card-btn">Shop Set →</a>
-        </div>
-      </div>
-    </div>
+  <div class="featured-grid" id="featuredGrid">
+    <!-- Featured products loaded here via JavaScript -->
   </div>
 </section>
 
@@ -1419,6 +1358,52 @@ footer {
 </footer>
 
 <script>
+  // ── LOAD FEATURED PRODUCTS ──────────────────────────────────
+  async function loadFeaturedProducts() {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      const featured = (data.products || []).filter(p => p.featured && p.active !== false);
+
+      const grid = document.getElementById('featuredGrid');
+      if (featured.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:rgba(255,255,255,0.4)">No featured products yet.</p>';
+        return;
+      }
+
+      grid.innerHTML = featured.map((p, idx) => {
+        const isFirst = idx === 0;
+        const cardClass = isFirst ? 'hero-card' : 'book-card';
+        const price = typeof p.price === 'number' ? p.price.toFixed(2) : p.price;
+        return `
+          <div class="product-card ${cardClass} reveal">
+            <div class="card-image-wrap">
+              <div class="card-glow-blue"></div>
+              <span class="product-emoji">${p.image || '📦'}</span>
+            </div>
+            <div class="card-body">
+              <p class="card-category">${p.category}</p>
+              <h3 class="card-name">${p.name}</h3>
+              <p class="card-desc">${p.description}</p>
+              <div class="card-footer">
+                <div class="card-price">
+                  <small>From</small>
+                  $${price}
+                </div>
+                <a href="catalogue.html" class="card-btn">View →</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Re-run scroll reveal on new elements
+      document.querySelectorAll('#featuredGrid .reveal').forEach(el => observer.observe(el));
+    } catch (err) {
+      console.error('Failed to load featured products:', err);
+    }
+  }
+
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -1452,6 +1437,9 @@ footer {
     });
   }, { threshold: 0.1 });
   reveals.forEach(el => observer.observe(el));
+
+  // Load featured products on page load
+  loadFeaturedProducts();
 </script>
 </body>
 </html>

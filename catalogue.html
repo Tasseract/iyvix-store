@@ -1096,6 +1096,86 @@ nav {
 
     document.getElementById('noResults').style.display = totalVisible === 0 ? 'block' : 'none';
   }
+
+  // ── LOAD PRODUCTS FROM API ──────────────────────────────────
+  async function loadCatalogueProducts() {
+    try {
+      const res = await fetch('/api/products');
+      const data = await res.json();
+      const allProducts = (data.products || []).filter(p => p.active !== false);
+
+      // Group by category
+      const byCategory = {};
+      allProducts.forEach(p => {
+        const cat = p.category || 'Other';
+        if (!byCategory[cat]) byCategory[cat] = [];
+        byCategory[cat].push(p);
+      });
+
+      // Find and populate product grids for each category section
+      const sections = document.querySelectorAll('.cat-section');
+      sections.forEach(sec => {
+        const label = sec.querySelector('.cat-section-label');
+        let category = null;
+
+        // Determine which category this section is for based on its label
+        const labelText = label?.textContent || '';
+        if (labelText.includes('Gadgets')) category = 'Gadgets & Tech';
+        else if (labelText.includes('Books')) category = 'Books & Digital';
+        else if (labelText.includes('Kitchen')) category = 'Titanium Kitchen';
+        else if (labelText.includes('Fashion')) category = 'Fashion & Apparel';
+        else if (labelText.includes('Quality')) category = 'Quality of Life';
+        else if (labelText.includes('Featured')) {
+          // Featured section - show featured products
+          const grid = sec.querySelector('.product-grid');
+          const featured = allProducts.filter(p => p.featured);
+          if (grid && featured.length > 0) {
+            grid.innerHTML = featured.map(p => createProductCard(p)).join('');
+          }
+          sec.querySelector('.cat-section-count').textContent = `${featured.length} products`;
+          return;
+        }
+
+        if (category && byCategory[category]) {
+          const grid = sec.querySelector('.product-grid');
+          if (grid) {
+            const products = byCategory[category];
+            grid.innerHTML = products.map(p => createProductCard(p)).join('');
+            sec.querySelector('.cat-section-count').textContent = `${products.length} products`;
+          }
+        }
+      });
+    } catch (err) {
+      console.error('Failed to load catalogue products:', err);
+    }
+  }
+
+  function createProductCard(p) {
+    const price = typeof p.price === 'number' ? p.price.toFixed(2) : p.price;
+    return `
+      <div class="pcard reveal" data-tags="${p.category.toLowerCase().replace(/[^a-z0-9]/g, '')}">
+        <div class="pcard-image" style="background:linear-gradient(160deg,#0f1520,#141d2e)">
+          <div class="pcard-glow-blue"></div>
+        </div>
+        <div class="pcard-content">
+          <h4 class="pcard-title">${p.name}</h4>
+          <p class="pcard-cat">${p.category}</p>
+          <p class="pcard-desc">${p.description || ''}</p>
+          <div class="pcard-footer">
+            <div class="pcard-price">$${price}</div>
+            <a href="#" class="pcard-btn">View →</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Load products when page is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadCatalogueProducts);
+  } else {
+    loadCatalogueProducts();
+  }
 </script>
 </body>
 </html>
