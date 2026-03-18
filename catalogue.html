@@ -454,6 +454,9 @@ nav {
 </style>
 </head>
 <body>
+</style>
+</head>
+<body>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -1104,6 +1107,10 @@ nav {
       const data = await res.json();
       const allProducts = (data.products || []).filter(p => p.active !== false);
 
+      // Update product count
+      const countEl = document.getElementById('productCount');
+      if (countEl) countEl.textContent = `${allProducts.length} products`;
+
       // Group by category
       const byCategory = {};
       allProducts.forEach(p => {
@@ -1136,13 +1143,23 @@ nav {
           return;
         }
 
+        const grid = sec.querySelector('.product-grid');
+        // clear existing static content before populating
+        if (grid) grid.innerHTML = '';
+
         if (category && byCategory[category]) {
-          const grid = sec.querySelector('.product-grid');
+          const products = byCategory[category];
           if (grid) {
-            const products = byCategory[category];
             grid.innerHTML = products.map(p => createProductCard(p)).join('');
-            sec.querySelector('.cat-section-count').textContent = `${products.length} products`;
           }
+          sec.querySelector('.cat-section-count').textContent = `${products.length} products`;
+        } else if (label && label.textContent && label.textContent.includes('Featured')) {
+          // Featured handled earlier; ensure count is accurate
+          sec.querySelector('.cat-section-count').textContent = `${(allProducts.filter(p => p.featured)).length} products`;
+        } else {
+          // No products for this category — show empty state placeholder
+          if (grid) grid.innerHTML = `<div style="grid-column:1/-1;padding:28px;color:var(--muted)">No products in this category yet.</div>`;
+          sec.querySelector('.cat-section-count').textContent = `0 products`;
         }
       });
     } catch (err) {
@@ -1152,29 +1169,57 @@ nav {
 
   function createProductCard(p) {
     const price = typeof p.price === 'number' ? p.price.toFixed(2) : p.price;
+    const cat = p.category || 'Other';
+    const tag = cat.toLowerCase().replace(/[^a-z0-9]/g, '');
     return `
-      <div class="pcard reveal" data-tags="${p.category.toLowerCase().replace(/[^a-z0-9]/g, '')}">
+      <div class="pcard reveal" data-tags="${tag}">
         <div class="pcard-image" style="background:linear-gradient(160deg,#0f1520,#141d2e)">
           <div class="pcard-glow-blue"></div>
         </div>
-        <div class="pcard-content">
-          <h4 class="pcard-title">${p.name}</h4>
-          <p class="pcard-cat">${p.category}</p>
+        <div class="pcard-body">
+          <p class="pcard-cat">${cat}</p>
+          <h3 class="pcard-name">${p.name}</h3>
           <p class="pcard-desc">${p.description || ''}</p>
           <div class="pcard-footer">
             <div class="pcard-price">$${price}</div>
-            <a href="#" class="pcard-btn">View →</a>
+            <a href="#" class="pcard-action">View →</a>
           </div>
         </div>
       </div>
     `;
   }
 
+  // Show loading placeholders and then load products from API
+  function showPlaceholders() {
+    const grids = document.querySelectorAll('.product-grid');
+    grids.forEach(grid => {
+      grid.innerHTML = '';
+      const cols = grid.classList.contains('wide') ? 3 : 4;
+      for (let i = 0; i < cols; i++) {
+        grid.insertAdjacentHTML('beforeend', `
+          <div class="skeleton-card">
+            <div class="skel-image"></div>
+            <div class="skel-line medium"></div>
+            <div class="skel-line long"></div>
+            <div style="margin-top:auto"><div class="skel-line short"></div></div>
+          </div>
+        `);
+      }
+    });
+    const featured = document.querySelector('.featured-banner');
+    if (featured) {
+      const left = featured.querySelector('.banner-left');
+      if (left) left.insertAdjacentHTML('afterbegin', '<div class="skel-line long" style="margin-bottom:12px"></div>');
+    }
+    const countEl = document.getElementById('productCount');
+    if (countEl) countEl.textContent = 'Loading…';
+  }
+
   // Load products when page is ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', loadCatalogueProducts);
+    document.addEventListener('DOMContentLoaded', () => { showPlaceholders(); loadCatalogueProducts(); });
   } else {
-    loadCatalogueProducts();
+    showPlaceholders(); loadCatalogueProducts();
   }
 </script>
 </body>

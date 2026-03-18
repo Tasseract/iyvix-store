@@ -2,13 +2,11 @@
 // Products are persisted to Supabase Postgres.
 // Environment variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
-import { createClient } from '@supabase/supabase-js';
+import { getSupabaseAdmin } from './supabase.js';
 
 function getSupabase() {
-  return createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
-  );
+  // Centralise admin client creation so errors are consistent when env vars are missing
+  return getSupabaseAdmin();
 }
 
 /** Lightweight token check (Phase 1). Phase 2: verify Supabase JWT. */

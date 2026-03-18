@@ -12,7 +12,7 @@ export function getSupabaseClient() {
   const key = process.env.SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY env vars');
+    throw new Error('Missing SUPABASE_URL or SUPABASE_ANON_KEY environment variables');
   }
 
   supabaseClient = createClient(url, key);
@@ -20,12 +20,12 @@ export function getSupabaseClient() {
 }
 
 export function getSupabaseAdmin() {
-  // Use service role key for admin operations (like user creation)
+  // Use service role key for admin operations (write access, bypass RLS)
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!url || !key) {
-    throw new Error('Missing SUPABASE service role key');
+    throw new Error('Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables');
   }
 
   return createClient(url, key);
