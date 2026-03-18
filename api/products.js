@@ -1,20 +1,14 @@
 // api/products.js
-// Phase 1: products are persisted to Vercel KV (simple key-value store).
-// Phase 2: swap all storage calls for Supabase Postgres queries.
-//
-// To enable Vercel KV: Dashboard → Storage → Create KV Store → link to project.
-// The KV_ env vars are injected automatically after linking.
+// Products are persisted to Supabase Postgres.
+// Environment variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
-import { createClient } from '@vercel/kv';
+import { createClient } from '@supabase/supabase-js';
 
-const PRODUCTS_KEY = 'iyvix:products';
-
-function getKV() {
-  // Will throw clearly if env vars are missing — good for dev feedback.
-  return createClient({
-    url:   process.env.KV_REST_API_URL,
-    token: process.env.KV_REST_API_TOKEN,
-  });
+function getSupabase() {
+  return createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 }
 
 /** Lightweight token check (Phase 1). Phase 2: verify Supabase JWT. */
@@ -39,13 +33,18 @@ export default async function handler(req, res) {
   // ── GET /api/products  (public — used by catalogue page) ──────────────────
   if (req.method === 'GET') {
     try {
-      const kv       = getKV();
-      const products = (await kv.get(PRODUCTS_KEY)) || [];
-      return res.status(200).json({ products });
+      const supabase = getSupabase();
+      const { data: products, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('active', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return res.status(200).json({ products: products || [] });
     } catch (err) {
       console.error(err);
-      // Graceful fallback: return empty list so the storefront still renders
-      return res.status(200).json({ products: [], warning: 'KV unavailable' });
+      return res.status(200).json({ products: [] });
     }
   }
 
@@ -54,7 +53,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorised' });
   }
 
-  const kv = getKV();
+  const supabase = getSupabase();
 
   // ── POST /api/products  (create) ──────────────────────────────────────────
   if (req.method === 'POST') {
@@ -64,24 +63,27 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'name and price are required' });
     }
 
-    const products = (await kv.get(PRODUCTS_KEY)) || [];
-    const newProduct = {
-      id:          crypto.randomUUID(),
-      name,
-      description: description || '',
-      price:       parseFloat(price),
-      category:    category || 'General',
-      // Phase 1: image stored as base64 data-URL in KV.
-      // Phase 2: upload to Supabase Storage, store the public URL here.
-      image:       imageBase64 ? `data:${imageType};base64,${imageBase64}` : null,
-      featured:    featured === true || featured === 'true',
-      createdAt:   new Date().toISOString(),
-      active:      true,
-    };
+    try {
+      const { data: product, error } = await supabase
+        .from('products')
+        .insert({
+          name,
+          description: description || '',
+          price: parseFloat(price),
+          category: category || 'General',
+          image: imageBase64 ? `data:${imageType};base64,${imageBase64}` : null,
+          featured: featured === true || featured === 'true',
+          active: true,
+        })
+        .select()
+        .single();
 
-    products.push(newProduct);
-    await kv.set(PRODUCTS_KEY, products);
-    return res.status(201).json({ product: newProduct });
+      if (error) throw error;
+      return res.status(201).json({ product });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to create product' });
+    }
   }
 
   // ── PUT /api/products  (update) ───────────────────────────────────────────
@@ -89,13 +91,21 @@ export default async function handler(req, res) {
     const { id, ...updates } = req.body || {};
     if (!id) return res.status(400).json({ error: 'id required' });
 
-    const products = (await kv.get(PRODUCTS_KEY)) || [];
-    const idx      = products.findIndex(p => p.id === id);
-    if (idx === -1) return res.status(404).json({ error: 'Product not found' });
+    try {
+      const { data: product, error } = await supabase
+        .from('products')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
 
-    products[idx] = { ...products[idx], ...updates, id };
-    await kv.set(PRODUCTS_KEY, products);
-    return res.status(200).json({ product: products[idx] });
+      if (error) throw error;
+      if (!product) return res.status(404).json({ error: 'Product not found' });
+      return res.status(200).json({ product });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to update product' });
+    }
   }
 
   // ── DELETE /api/products  (soft delete — sets active: false) ─────────────
@@ -103,13 +113,18 @@ export default async function handler(req, res) {
     const { id } = req.body || {};
     if (!id) return res.status(400).json({ error: 'id required' });
 
-    const products = (await kv.get(PRODUCTS_KEY)) || [];
-    const idx      = products.findIndex(p => p.id === id);
-    if (idx === -1) return res.status(404).json({ error: 'Product not found' });
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ active: false })
+        .eq('id', id);
 
-    products[idx].active = false;
-    await kv.set(PRODUCTS_KEY, products);
-    return res.status(200).json({ success: true });
+      if (error) throw error;
+      return res.status(200).json({ success: true });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to delete product' });
+    }
   }
 
   return res.status(405).json({ error: 'Method not allowed' });

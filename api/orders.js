@@ -1,16 +1,14 @@
 // api/orders.js
-// Phase 1: orders are stored in Vercel KV.
-// Phase 2: replace with Supabase Postgres + Stripe webhook integration.
+// Orders are stored in Supabase Postgres.
+// Environment variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
-import { createClient } from '@vercel/kv';
+import { createClient } from '@supabase/supabase-js';
 
-const ORDERS_KEY = 'iyvix:orders';
-
-function getKV() {
-  return createClient({
-    url:   process.env.KV_REST_API_URL,
-    token: process.env.KV_REST_API_TOKEN,
-  });
+function getSupabase() {
+  return createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 }
 
 function isAuthorised(req) {
@@ -34,42 +32,69 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorised' });
   }
 
-  const kv = getKV();
+  const supabase = getSupabase();
 
   // ── GET /api/orders ───────────────────────────────────────────────────────
   if (req.method === 'GET') {
-    const orders = (await kv.get(ORDERS_KEY)) || [];
-    return res.status(200).json({ orders });
+    try {
+      const { data: orders, error } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      return res.status(200).json({ orders: orders || [] });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to fetch orders' });
+    }
   }
 
-  // ── POST /api/orders  (Phase 2: called by Stripe webhook) ─────────────────
+  // ── POST /api/orders  (create) ────────────────────────────────────────────
   if (req.method === 'POST') {
     const { customerName, customerEmail, items, total, status } = req.body || {};
-    const orders = (await kv.get(ORDERS_KEY)) || [];
-    const order  = {
-      id:            crypto.randomUUID(),
-      customerName:  customerName  || 'Unknown',
-      customerEmail: customerEmail || '',
-      items:         items || [],
-      total:         parseFloat(total) || 0,
-      status:        status || 'pending',   // pending | paid | fulfilled | cancelled
-      createdAt:     new Date().toISOString(),
-    };
-    orders.unshift(order);   // newest first
-    await kv.set(ORDERS_KEY, orders);
-    return res.status(201).json({ order });
+
+    try {
+      const { data: order, error } = await supabase
+        .from('orders')
+        .insert({
+          customer_name: customerName || 'Unknown',
+          customer_email: customerEmail || '',
+          items: items || [],
+          total: parseFloat(total) || 0,
+          status: status || 'pending',
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return res.status(201).json({ order });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to create order' });
+    }
   }
 
-  // ── PUT /api/orders  (update status) ──────────────────────────────────────
+  // ── PUT /api/orders  (update status) ───────────────────────────────────────
   if (req.method === 'PUT') {
     const { id, status } = req.body || {};
     if (!id || !status) return res.status(400).json({ error: 'id and status required' });
-    const orders = (await kv.get(ORDERS_KEY)) || [];
-    const idx    = orders.findIndex(o => o.id === id);
-    if (idx === -1) return res.status(404).json({ error: 'Order not found' });
-    orders[idx].status = status;
-    await kv.set(ORDERS_KEY, orders);
-    return res.status(200).json({ order: orders[idx] });
+
+    try {
+      const { data: order, error } = await supabase
+        .from('orders')
+        .update({ status })
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      if (!order) return res.status(404).json({ error: 'Order not found' });
+      return res.status(200).json({ order });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to update order' });
+    }
   }
 
   return res.status(405).json({ error: 'Method not allowed' });

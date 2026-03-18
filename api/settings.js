@@ -1,10 +1,8 @@
 // api/settings.js
-// Phase 1: settings stored in Vercel KV.
-// Phase 2: move to Supabase table `site_settings`.
+// Settings stored in Supabase table `site_settings`.
+// Environment variables: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
-import { createClient } from '@vercel/kv';
-
-const SETTINGS_KEY = 'iyvix:settings';
+import { createClient } from '@supabase/supabase-js';
 
 const DEFAULTS = {
   storeName:    'IYVIX',
@@ -17,11 +15,11 @@ const DEFAULTS = {
   maintenanceMode: false,
 };
 
-function getKV() {
-  return createClient({
-    url:   process.env.KV_REST_API_URL,
-    token: process.env.KV_REST_API_TOKEN,
-  });
+function getSupabase() {
+  return createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
 }
 
 function isAuthorised(req) {
@@ -41,15 +39,26 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const kv = getKV();
+  const supabase = getSupabase();
 
   // ── GET /api/settings (public — used by storefront) ──────────────────────
   if (req.method === 'GET') {
     try {
-      const saved    = (await kv.get(SETTINGS_KEY)) || {};
-      const settings = { ...DEFAULTS, ...saved };
+      const { data: rows, error } = await supabase
+        .from('site_settings')
+        .select('key, value');
+
+      if (error) throw error;
+
+      // Merge database settings with defaults
+      const settings = { ...DEFAULTS };
+      rows?.forEach(row => {
+        settings[row.key] = row.value;
+      });
+
       return res.status(200).json({ settings });
-    } catch {
+    } catch (err) {
+      console.error(err);
       return res.status(200).json({ settings: DEFAULTS });
     }
   }
@@ -57,10 +66,24 @@ export default async function handler(req, res) {
   // ── PUT /api/settings (admin only) ───────────────────────────────────────
   if (req.method === 'PUT') {
     if (!isAuthorised(req)) return res.status(401).json({ error: 'Unauthorised' });
-    const current  = (await kv.get(SETTINGS_KEY)) || {};
-    const updated  = { ...DEFAULTS, ...current, ...req.body };
-    await kv.set(SETTINGS_KEY, updated);
-    return res.status(200).json({ settings: updated });
+
+    try {
+      const updates = req.body || {};
+
+      // Upsert each setting
+      for (const [key, value] of Object.entries(updates)) {
+        const { error } = await supabase
+          .from('site_settings')
+          .upsert({ key, value }, { onConflict: 'key' });
+
+        if (error) throw error;
+      }
+
+      return res.status(200).json({ settings: updates });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Failed to update settings' });
+    }
   }
 
   return res.status(405).json({ error: 'Method not allowed' });
