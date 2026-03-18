@@ -472,6 +472,15 @@ nav {
   background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(80,200,120,0.08), transparent);
 }
 
+/* Featured product image styling */
+.card-image-wrap img.product-img {
+  width: auto;
+  height: 72%;
+  max-width: 92%;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
 .card-badge {
   position: absolute; top: 16px; left: 16px;
   padding: 5px 11px;
@@ -1375,11 +1384,15 @@ footer {
         const isFirst = idx === 0;
         const cardClass = isFirst ? 'hero-card' : 'book-card';
         const price = typeof p.price === 'number' ? p.price.toFixed(2) : p.price;
+        const imageHtml = p.image && (p.image.startsWith('data:') || p.image.startsWith('http'))
+          ? `<img class="product-img" src="${p.image}" alt="${p.name}">`
+          : `<span class="product-emoji">📦</span>`;
+
         return `
           <div class="product-card ${cardClass} reveal">
             <div class="card-image-wrap">
               <div class="card-glow-blue"></div>
-              <span class="product-emoji">${p.image || '📦'}</span>
+              ${imageHtml}
             </div>
             <div class="card-body">
               <p class="card-category">${p.category}</p>
@@ -1387,7 +1400,7 @@ footer {
               <p class="card-desc">${p.description}</p>
               <div class="card-footer">
                 <div class="card-price">
-                  <small>From</small>
+                  <small>From</small>`;
                   $${price}
                 </div>
                 <a href="catalogue.html" class="card-btn">View →</a>
