@@ -1,0 +1,17 @@
+{
+  "name": "iyvix-storefront",
+  "version": "1.0.0",
+  "private": true,
+  "description": "IYVIX — Curated storefront. Static frontend + Vercel serverless API.",
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  },
+  "devDependencies": {
+    "vercel": "^34.0.0"
+  },
+  "scripts": {
+    "dev":   "vercel dev",
+    "deploy": "vercel --prod"
+  }
+}

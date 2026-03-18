@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/admin",    "dest": "/admin/index.html" },
+    { "src": "/shop",     "dest": "/catalogue.html" },
+    { "src": "/music",    "dest": "/music.html" },
+    { "src": "/",         "dest": "/index.html" }
+  ]
+}

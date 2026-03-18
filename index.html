@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IYVIX — Curated for the Exceptional</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink: #0a0a0b;
+  --ink2: #111114;
+  --surface: #141417;
+  --card: #1a1a1e;
+  --border: rgba(255,255,255,0.07);
+  --muted: rgba(255,255,255,0.4);
+  --text: rgba(255,255,255,0.88);
+  --white: #ffffff;
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --blue: #4a9eff;
+  --radius: 20px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ink);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  width: 10px; height: 10px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+  mix-blend-mode: normal;
+}
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(201,168,76,0.5);
+  border-radius: 50%;
+  position: fixed; top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.18s ease-out, width 0.25s, height 0.25s;
+}
+body:has(a:hover) .cursor { background: var(--gold-light); transform: translate(-50%,-50%) scale(1.5); }
+body:has(a:hover) .cursor-ring { width: 52px; height: 52px; border-color: rgba(201,168,76,0.3); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 56px; height: 60px;
+  background: rgba(10,10,11,0.75);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.3s;
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.nav-logo span { color: var(--gold); }
+
+.nav-links {
+  display: flex; gap: 40px; list-style: none;
+}
+
+.nav-links a {
+  font-size: 13px; font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+
+.nav-right { display: flex; align-items: center; gap: 24px; }
+
+.nav-cart {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: var(--text);
+  text-decoration: none;
+  padding: 8px 18px;
+  border: 1px solid var(--border);
+  border-radius: 980px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.nav-cart:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 80px 56px 80px;
+  position: relative;
+  overflow: hidden;
+  gap: 40px;
+}
+
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 75% 50%, rgba(74,158,255,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(201,168,76,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Grain overlay */
+.hero::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none; opacity: 0.4;
+}
+
+.hero-content { position: relative; z-index: 1; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 7px 16px;
+  background: rgba(201,168,76,0.12);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 980px;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 32px;
+  opacity: 0; transform: translateY(12px);
+  animation: fadeUp 0.6s 0.2s ease forwards;
+}
+
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(54px, 5.5vw, 88px);
+  font-weight: 300;
+  line-height: 1.03;
+  letter-spacing: -1px;
+  color: var(--white);
+  margin-bottom: 28px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 0.35s ease forwards;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold-light);
+  font-weight: 300;
+}
+
+.hero-sub {
+  font-size: 16px; font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 460px;
+  margin-bottom: 44px;
+  opacity: 0; transform: translateY(16px);
+  animation: fadeUp 0.7s 0.5s ease forwards;
+}
+
+.hero-actions {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  opacity: 0; transform: translateY(12px);
+  animation: fadeUp 0.6s 0.65s ease forwards;
+}
+
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 30px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+  color: var(--ink);
+  border-radius: 980px;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(201,168,76,0.25);
+}
+.btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 40px rgba(201,168,76,0.35); }
+
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 30px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 980px;
+  font-size: 14px; font-weight: 400;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+/* Hero visual */
+.hero-visual {
+  position: relative; z-index: 1;
+  opacity: 0; transform: translateX(30px) scale(0.97);
+  animation: slideIn 1s 0.6s ease forwards;
+}
+
+@keyframes slideIn {
+  to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.hero-device-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 48px 40px 36px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.6);
+}
+
+.hero-device-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+}
+
+.device-glow {
+  position: absolute; top: -80px; right: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(74,158,255,0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.pre-order-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px;
+  background: rgba(74,158,255,0.15);
+  border: 1px solid rgba(74,158,255,0.3);
+  border-radius: 6px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 20px;
+}
+
+.device-emoji {
+  font-size: 100px;
+  display: block;
+  text-align: center;
+  margin: 20px 0;
+  filter: drop-shadow(0 20px 40px rgba(74,158,255,0.3));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.device-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px; font-weight: 400;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.device-tagline {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.device-specs {
+  display: flex; gap: 20px;
+  margin-bottom: 28px;
+}
+
+.spec {
+  flex: 1;
+  padding: 12px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.spec-val {
+  font-size: 18px; font-weight: 600;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.spec-label {
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.device-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.device-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 400;
+  color: var(--gold-light);
+}
+
+.device-price small {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 300;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 13px 0;
+  overflow: hidden; white-space: nowrap;
+  background: var(--ink2);
+}
+
+.marquee-inner {
+  display: inline-block;
+  animation: marquee 28s linear infinite;
+}
+
+.marquee-inner span {
+  font-size: 12px; font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  margin: 0 44px;
+}
+
+.marquee-inner span strong { color: var(--gold); font-weight: 500; }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── FEATURED 3-UP ── */
+.featured {
+  padding: 100px 56px;
+  background: var(--ink);
+}
+
+.section-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 56px;
+}
+
+.section-title-group {}
+
+.section-eyebrow {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(34px, 3.5vw, 52px);
+  font-weight: 300;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+  color: var(--white);
+}
+
+.see-all {
+  font-size: 13px; font-weight: 400;
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.see-all:hover { color: var(--gold); border-color: var(--gold); }
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 20px;
+}
+
+/* Product Cards */
+.product-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.3s;
+  position: relative;
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  border-color: rgba(255,255,255,0.12);
+}
+
+.product-card.hero-card { background: linear-gradient(160deg, #0f1520, #141d2e); }
+.product-card.book-card { background: linear-gradient(160deg, #120f1a, #1c1427); }
+.product-card.kitchen-card { background: linear-gradient(160deg, #0f1a14, #14201a); }
+
+.card-image-wrap {
+  height: 260px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card.hero-card .card-image-wrap { height: 320px; }
+
+.product-emoji {
+  font-size: 90px;
+  transition: transform 0.4s ease;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.4));
+}
+.product-card.hero-card .product-emoji { font-size: 120px; }
+.product-card:hover .product-emoji { transform: scale(1.08) translateY(-6px); }
+
+.card-glow-blue {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(74,158,255,0.1), transparent);
+}
+.card-glow-purple {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(160,100,255,0.1), transparent);
+}
+.card-glow-green {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 60%, rgba(80,200,120,0.08), transparent);
+}
+
+.card-badge {
+  position: absolute; top: 16px; left: 16px;
+  padding: 5px 11px;
+  border-radius: 6px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+.badge-preorder { background: rgba(74,158,255,0.18); color: var(--blue); border: 1px solid rgba(74,158,255,0.3); }
+.badge-new { background: rgba(201,168,76,0.18); color: var(--gold-light); border: 1px solid rgba(201,168,76,0.3); }
+.badge-exclusive { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.12); }
+
+.card-body { padding: 24px 26px 26px; }
+
+.card-category {
+  font-size: 11px; font-weight: 400;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+
+.card-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 400;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
+}
+
+.card-desc {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.card-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 400;
+  color: var(--gold-light);
+}
+
+.card-price small {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px; color: var(--muted);
+  display: block; margin-bottom: 2px;
+}
+
+.card-btn {
+  padding: 9px 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 980px;
+  font-size: 13px; font-weight: 400;
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+}
+.card-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); }
+
+/* ── BOOK SPOTLIGHT ── */
+.book-spotlight {
+  margin: 0 56px 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 80px 72px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.book-spotlight::before {
+  content: '';
+  position: absolute; top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160,100,255,0.08), transparent 60%);
+  pointer-events: none;
+}
+
+.book-visual {
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+
+.book-3d {
+  position: relative;
+  width: 200px;
+}
+
+.book-cover {
+  width: 200px; height: 280px;
+  background: linear-gradient(160deg, #2d1b4e, #1a0f30);
+  border-radius: 4px 16px 16px 4px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  box-shadow: -8px 12px 40px rgba(0,0,0,0.6), 8px 0 0 rgba(255,255,255,0.05) inset;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s ease;
+}
+
+.book-visual:hover .book-cover { transform: rotate(-3deg) scale(1.04); }
+
+.book-cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(160,100,255,0.2) 0%, transparent 60%);
+}
+
+.book-title-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 600;
+  color: #e8d8ff;
+  text-align: center;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.book-sub-text {
+  font-size: 10px; font-weight: 300;
+  letter-spacing: 0.15em; text-transform: uppercase;
+  color: rgba(220,190,255,0.5);
+  text-align: center;
+  position: relative;
+}
+
+.book-orb {
+  font-size: 60px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.book-spine {
+  position: absolute; left: -12px; top: 0; bottom: 0;
+  width: 12px;
+  background: linear-gradient(90deg, #1a0f30, #2d1b4e);
+  border-radius: 4px 0 0 4px;
+  box-shadow: -4px 0 12px rgba(0,0,0,0.4);
+}
+
+.book-glow {
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160,100,255,0.15), transparent 60%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.book-content {}
+
+.book-content .section-eyebrow { margin-bottom: 16px; }
+
+.book-content h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(38px, 3.5vw, 58px);
+  font-weight: 300;
+  line-height: 1.08;
+  color: var(--white);
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.book-content h2 em {
+  font-style: italic;
+  color: #c0a0ff;
+}
+
+.book-series-tag {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+
+.book-content p {
+  font-size: 15px; font-weight: 300;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 36px;
+}
+
+.book-formats {
+  display: flex; gap: 12px; margin-bottom: 36px;
+}
+
+.format-pill {
+  padding: 7px 16px;
+  border: 1px solid var(--border);
+  border-radius: 980px;
+  font-size: 12px; font-weight: 400;
+  color: var(--muted);
+}
+
+.format-pill.active {
+  background: rgba(160,100,255,0.12);
+  border-color: rgba(160,100,255,0.4);
+  color: #c0a0ff;
+}
+
+.btn-purple {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 30px;
+  background: linear-gradient(135deg, #7b3fe4, #a060ff);
+  color: #fff;
+  border-radius: 980px;
+  font-size: 14px; font-weight: 500;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(120,60,230,0.3);
+}
+.btn-purple:hover { transform: scale(1.03); box-shadow: 0 8px 40px rgba(120,60,230,0.45); }
+
+/* ── CATEGORIES STRIP ── */
+.categories-strip {
+  padding: 80px 56px;
+  background: var(--ink2);
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-top: 52px;
+}
+
+.cat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.3s, border-color 0.3s, background 0.3s;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 14px;
+}
+.cat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.04);
+}
+
+.cat-icon { font-size: 36px; }
+
+.cat-name {
+  font-size: 13px; font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.cat-count {
+  font-size: 11px; font-weight: 300;
+  color: var(--muted);
+}
+
+/* ── SALADMASTER SECTION ── */
+.saladmaster {
+  margin: 0 56px 100px;
+  border-radius: 28px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, #0a1a0f 0%, #0f2218 40%, #0a1a0f 100%);
+  border: 1px solid rgba(80,200,120,0.12);
+}
+
+.saladmaster-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  min-height: 480px;
+}
+
+.sm-content {
+  padding: 72px 64px;
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; justify-content: center;
+}
+
+.sm-eyebrow {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #5ec882;
+  margin-bottom: 16px;
+}
+
+.sm-content h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 3.5vw, 52px);
+  font-weight: 300;
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: 20px;
+}
+
+.sm-content h2 em { font-style: italic; color: #90e8a8; }
+
+.sm-content p {
+  font-size: 15px; font-weight: 300;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 380px;
+}
+
+.sm-features {
+  display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 40px;
+}
+
+.sm-feature {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; font-weight: 300;
+  color: rgba(255,255,255,0.6);
+}
+
+.sm-feature-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #5ec882;
+  flex-shrink: 0;
+}
+
+.btn-green {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 30px;
+  background: linear-gradient(135deg, #2d8c48, #3daa5c);
+  color: #fff;
+  border-radius: 980px;
+  font-size: 14px; font-weight: 500;
+  text-decoration: none;
+  width: fit-content;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 24px rgba(60,170,90,0.25);
+}
+.btn-green:hover { transform: scale(1.03); box-shadow: 0 8px 40px rgba(60,170,90,0.4); }
+
+.sm-visual {
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.sm-visual::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(80,200,120,0.1), transparent 60%);
+}
+
+.sm-products-visual {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; padding: 40px;
+  position: relative; z-index: 1;
+  width: 100%;
+}
+
+.sm-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(80,200,120,0.12);
+  border-radius: 14px;
+  padding: 24px;
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.sm-item:hover { transform: scale(1.03); border-color: rgba(80,200,120,0.25); }
+
+.sm-item-emoji { font-size: 44px; display: block; margin-bottom: 10px; }
+
+.sm-item-name {
+  font-size: 12px; font-weight: 400;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 4px;
+}
+
+.sm-item-mat {
+  font-size: 10px; font-weight: 300;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: #5ec882;
+}
+
+/* ── STATS ── */
+.stats-band {
+  padding: 80px 56px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--border);
+}
+
+.stat-block {
+  background: var(--ink);
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 60px; font-weight: 300;
+  color: var(--white);
+  letter-spacing: -2px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.stat-num span { color: var(--gold); }
+
+.stat-label {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+/* ── FINAL CTA ── */
+.final-cta {
+  padding: 140px 56px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.final-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(201,168,76,0.07), transparent),
+    radial-gradient(ellipse 40% 40% at 30% 40%, rgba(74,158,255,0.04), transparent);
+}
+
+.final-cta h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 5.5vw, 78px);
+  font-weight: 300;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  color: var(--white);
+  max-width: 720px;
+  margin: 0 auto 28px;
+  position: relative;
+}
+
+.final-cta h2 em { font-style: italic; color: var(--gold-light); }
+
+.final-cta p {
+  font-size: 17px; font-weight: 300;
+  color: var(--muted);
+  max-width: 440px;
+  margin: 0 auto 48px;
+  line-height: 1.65;
+  position: relative;
+}
+
+.final-cta .btn-gold { font-size: 15px; padding: 16px 40px; position: relative; }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 64px 56px 40px;
+  background: var(--ink2);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 56px;
+}
+
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 14px;
+}
+
+.footer-brand span { color: var(--gold); }
+
+.footer-tagline {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 220px;
+  margin-bottom: 24px;
+}
+
+.footer-social {
+  display: flex; gap: 12px;
+}
+
+.social-btn {
+  width: 36px; height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.social-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+
+.footer-col h5 {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 20px;
+}
+
+.footer-col ul {
+  list-style: none;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.footer-col a {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-col a:hover { color: var(--white); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; font-weight: 300;
+  color: rgba(255,255,255,0.25);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .hero { grid-template-columns: 1fr; padding: 100px 32px 60px; }
+  .hero-visual { max-width: 500px; margin: 0 auto; }
+  .featured-grid { grid-template-columns: 1fr 1fr; }
+  .product-card.hero-card { grid-column: 1 / -1; }
+  .categories-grid { grid-template-columns: repeat(3, 1fr); }
+  .stats-band { grid-template-columns: 1fr 1fr; }
+  .saladmaster-inner { grid-template-columns: 1fr; }
+  .sm-visual { min-height: 300px; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .book-spotlight { margin: 0 32px 80px; padding: 56px 48px; gap: 48px; }
+  .saladmaster { margin: 0 32px 80px; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 100px 24px 60px; }
+  .featured { padding: 72px 24px; }
+  .featured-grid { grid-template-columns: 1fr; }
+  .categories-grid { grid-template-columns: repeat(2, 1fr); }
+  .book-spotlight { grid-template-columns: 1fr; margin: 0 24px 72px; padding: 48px 32px; }
+  .saladmaster { margin: 0 24px 72px; }
+  .sm-content { padding: 48px 32px; }
+  .stats-band { grid-template-columns: 1fr 1fr; }
+  .categories-strip { padding: 60px 24px; }
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+  .hero-actions { flex-direction: column; align-items: flex-start; }
+  .final-cta { padding: 100px 24px; }
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">IYV<span>IX</span></a>
+  <ul class="nav-links">
+    <li><a href="catalogue.html">Catalogue</a></li>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#books">Books</a></li>
+    <li><a href="#kitchen">Kitchen</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="nav-cart" href="catalogue.html">Shop All →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Now accepting pre-orders
+    </div>
+    <h1>Objects of<br><em>consequence.</em></h1>
+    <p class="hero-sub">Titanium cookware from the world's best. Gadgets before anyone else has them. Books that reshape how you think. Designed things, curated for people who notice.</p>
+    <div class="hero-actions">
+      <a href="catalogue.html" class="btn-gold">Explore Catalogue</a>
+      <a href="#featured" class="btn-outline">See What's Featured ↓</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-device-card">
+      <div class="device-glow"></div>
+      <div class="pre-order-tag">
+        <span>●</span> Pre-Order Open
+      </div>
+      <span class="device-emoji">💻</span>
+      <div class="device-name">MacBook Neo</div>
+      <div class="device-tagline">The thinnest MacBook ever made. M5 Ultra chip.<br>Available Q2 2026.</div>
+      <div class="device-specs">
+        <div class="spec">
+          <div class="spec-val">M5U</div>
+          <div class="spec-label">Chip</div>
+        </div>
+        <div class="spec">
+          <div class="spec-val">36hr</div>
+          <div class="spec-label">Battery</div>
+        </div>
+        <div class="spec">
+          <div class="spec-val">5.8mm</div>
+          <div class="spec-label">Thin</div>
+        </div>
+      </div>
+      <div class="device-footer">
+        <div class="device-price">
+          <small>Starting from</small>
+          $1,999
+        </div>
+        <a href="catalogue.html" class="btn-gold">Pre-Order</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span>✦ <strong>MacBook Neo</strong> Pre-Order Live</span>
+    <span>✦ <strong>Dreamscraper</strong> Vol. I — Available Now</span>
+    <span>✦ <strong>Saladmaster</strong> Titanium — Exclusive Partner</span>
+    <span>✦ <strong>Nothing Phone 4</strong> In Stock</span>
+    <span>✦ Free Worldwide Shipping over $80</span>
+    <span>✦ <strong>Digital Products</strong> — Instant Delivery</span>
+    <span>✦ <strong>30-Day</strong> Hassle-Free Returns</span>
+    <span>✦ <strong>MacBook Neo</strong> Pre-Order Live</span>
+    <span>✦ <strong>Dreamscraper</strong> Vol. I — Available Now</span>
+    <span>✦ <strong>Saladmaster</strong> Titanium — Exclusive Partner</span>
+    <span>✦ <strong>Nothing Phone 4</strong> In Stock</span>
+    <span>✦ Free Worldwide Shipping over $80</span>
+    <span>✦ <strong>Digital Products</strong> — Instant Delivery</span>
+    <span>✦ <strong>30-Day</strong> Hassle-Free Returns</span>
+  </div>
+</div>
+
+<!-- FEATURED 3 PRODUCTS -->
+<section class="featured" id="featured">
+  <div class="section-header reveal">
+    <div class="section-title-group">
+      <p class="section-eyebrow">Hand-Picked</p>
+      <h2 class="section-title">Featured this month.</h2>
+    </div>
+    <a href="catalogue.html" class="see-all">View all products →</a>
+  </div>
+
+  <div class="featured-grid">
+    <!-- MacBook Neo -->
+    <div class="product-card hero-card reveal">
+      <div class="card-image-wrap">
+        <div class="card-glow-blue"></div>
+        <span class="card-badge badge-preorder">Pre-Order</span>
+        <span class="product-emoji">💻</span>
+      </div>
+      <div class="card-body">
+        <p class="card-category">Apple · Gadgets</p>
+        <h3 class="card-name">MacBook Neo</h3>
+        <p class="card-desc">M5 Ultra · 5.8mm thin · 36-hour battery life. The most powerful MacBook ever engineered — reserve yours before they're gone.</p>
+        <div class="card-footer">
+          <div class="card-price">
+            <small>From</small>
+            $1,999
+          </div>
+          <a href="catalogue.html" class="card-btn">Pre-Order →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dreamscraper Book -->
+    <div class="product-card book-card reveal">
+      <div class="card-image-wrap">
+        <div class="card-glow-purple"></div>
+        <span class="card-badge badge-new">New</span>
+        <span class="product-emoji">📖</span>
+      </div>
+      <div class="card-body">
+        <p class="card-category">Books · Original</p>
+        <h3 class="card-name">Dreamscraper</h3>
+        <p class="card-desc">Volume I of our original book series. A meditation on ambition, craft, and the architecture of extraordinary lives.</p>
+        <div class="card-footer">
+          <div class="card-price">
+            <small>Hardcover</small>
+            $42
+          </div>
+          <a href="catalogue.html" class="card-btn">Get a Copy →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saladmaster -->
+    <div class="product-card kitchen-card reveal">
+      <div class="card-image-wrap">
+        <div class="card-glow-green"></div>
+        <span class="card-badge badge-exclusive">Exclusive</span>
+        <span class="product-emoji">🥘</span>
+      </div>
+      <div class="card-body">
+        <p class="card-category">Saladmaster · Kitchen</p>
+        <h3 class="card-name">Titanium Cookware Set</h3>
+        <p class="card-desc">The last cookware you'll ever buy. Surgical-grade titanium. Vapor-seal technology. A lifetime guarantee.</p>
+        <div class="card-footer">
+          <div class="card-price">
+            <small>From</small>
+            $380
+          </div>
+          <a href="catalogue.html" class="card-btn">Shop Set →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK SPOTLIGHT -->
+<div class="book-spotlight reveal" id="books">
+  <div class="book-visual">
+    <div class="book-glow"></div>
+    <div class="book-3d">
+      <div class="book-spine"></div>
+      <div class="book-cover">
+        <span class="book-orb">🌙</span>
+        <div class="book-title-text">DREAM<br>SCRAPER</div>
+        <div class="book-sub-text">Volume I</div>
+      </div>
+    </div>
+  </div>
+  <div class="book-content">
+    <p class="section-eyebrow">Original Series</p>
+    <h2>The world belongs<br>to the <em>relentless.</em></h2>
+    <p class="book-series-tag">Dreamscraper · Volume I of VI</p>
+    <p>Written by us, for the ones who build things. Dreamscraper is a series about the inner life of ambition — how to cultivate it, how to survive it, and how to turn it into something that outlasts you.</p>
+    <div class="book-formats">
+      <span class="format-pill active">Hardcover</span>
+      <span class="format-pill">Paperback</span>
+      <span class="format-pill">Digital PDF</span>
+      <span class="format-pill">Audiobook</span>
+    </div>
+    <a href="catalogue.html" class="btn-purple">Get Your Copy — $42 →</a>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories-strip">
+  <div class="section-header reveal">
+    <div class="section-title-group">
+      <p class="section-eyebrow">Browse</p>
+      <h2 class="section-title">Shop by category.</h2>
+    </div>
+    <a href="catalogue.html" class="see-all">Full catalogue →</a>
+  </div>
+  <div class="categories-grid">
+    <a class="cat-card reveal" href="catalogue.html">
+      <span class="cat-icon">💻</span>
+      <span class="cat-name">Gadgets & Tech</span>
+      <span class="cat-count">24 products</span>
+    </a>
+    <a class="cat-card reveal" href="catalogue.html">
+      <span class="cat-icon">🥘</span>
+      <span class="cat-name">Titanium Kitchen</span>
+      <span class="cat-count">18 products</span>
+    </a>
+    <a class="cat-card reveal" href="catalogue.html">
+      <span class="cat-icon">📚</span>
+      <span class="cat-name">Books & Digital</span>
+      <span class="cat-count">12 products</span>
+    </a>
+    <a class="cat-card reveal" href="catalogue.html">
+      <span class="cat-icon">🧥</span>
+      <span class="cat-name">Fashion & Apparel</span>
+      <span class="cat-count">9 products</span>
+    </a>
+    <a class="cat-card reveal" href="catalogue.html">
+      <span class="cat-icon">✨</span>
+      <span class="cat-name">Quality of Life</span>
+      <span class="cat-count">31 products</span>
+    </a>
+  </div>
+</section>
+
+<!-- SALADMASTER -->
+<div class="saladmaster reveal" id="kitchen">
+  <div class="saladmaster-inner">
+    <div class="sm-content">
+      <p class="sm-eyebrow">Exclusive Partner · Saladmaster</p>
+      <h2>Cook with<br><em>precision.</em><br>Built to last.</h2>
+      <p>We have a direct partnership with Saladmaster — the gold standard of titanium cookware since 1946. These aren't pots and pans. They're instruments of nourishment, engineered to outlive your kitchen.</p>
+      <div class="sm-features">
+        <div class="sm-feature"><span class="sm-feature-dot"></span>Surgical-grade titanium construction</div>
+        <div class="sm-feature"><span class="sm-feature-dot"></span>Vapour-seal technology preserves nutrients</div>
+        <div class="sm-feature"><span class="sm-feature-dot"></span>No coating, no chemicals — ever</div>
+        <div class="sm-feature"><span class="sm-feature-dot"></span>Lifetime guarantee from the manufacturer</div>
+      </div>
+      <a href="catalogue.html" class="btn-green">Shop Saladmaster Collection →</a>
+    </div>
+    <div class="sm-visual">
+      <div class="sm-products-visual">
+        <div class="sm-item">
+          <span class="sm-item-emoji">🍳</span>
+          <div class="sm-item-name">Skillet</div>
+          <div class="sm-item-mat">Grade 316 Ti</div>
+        </div>
+        <div class="sm-item">
+          <span class="sm-item-emoji">🫕</span>
+          <div class="sm-item-name">Roaster</div>
+          <div class="sm-item-mat">Grade 316 Ti</div>
+        </div>
+        <div class="sm-item">
+          <span class="sm-item-emoji">🥘</span>
+          <div class="sm-item-name">Stock Pot</div>
+          <div class="sm-item-mat">Grade 316 Ti</div>
+        </div>
+        <div class="sm-item">
+          <span class="sm-item-emoji">🍲</span>
+          <div class="sm-item-name">Sauté Pan</div>
+          <div class="sm-item-mat">Grade 316 Ti</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stat-block reveal">
+    <div class="stat-num">5<span>+</span></div>
+    <div class="stat-label">Product categories, each curated</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num">100<span>%</span></div>
+    <div class="stat-label">Titanium grade verified</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Saladmaster lifetime guarantee</div>
+  </div>
+  <div class="stat-block reveal">
+    <div class="stat-num">30<span>d</span></div>
+    <div class="stat-label">No-questions return policy</div>
+  </div>
+</div>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2>The <em>exceptional</em><br>deserves better tools.</h2>
+  <p>A full catalogue of things that matter — for people who understand that quality is never accidental.</p>
+  <a href="catalogue.html" class="btn-gold">Browse the Full Catalogue →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-brand">IYV<span>IX</span></div>
+      <p class="footer-tagline">Curated objects for intentional living. Gadgets, kitchenware, books, and fashion — only the exceptional.</p>
+      <div class="footer-social">
+        <a class="social-btn" href="#">𝕏</a>
+        <a class="social-btn" href="#">in</a>
+        <a class="social-btn" href="#">▶</a>
+        <a class="social-btn" href="#">◉</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Shop</h5>
+      <ul>
+        <li><a href="catalogue.html">All Products</a></li>
+        <li><a href="catalogue.html">MacBook Neo</a></li>
+        <li><a href="catalogue.html">Dreamscraper</a></li>
+        <li><a href="catalogue.html">Saladmaster</a></li>
+        <li><a href="catalogue.html">Fashion</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Categories</h5>
+      <ul>
+        <li><a href="catalogue.html">Gadgets & Tech</a></li>
+        <li><a href="catalogue.html">Kitchen & Titanium</a></li>
+        <li><a href="catalogue.html">Books & Digital</a></li>
+        <li><a href="catalogue.html">Quality of Life</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About IYVIX</a></li>
+        <li><a href="#">Our Curation Process</a></li>
+        <li><a href="#">Partnerships</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Support</h5>
+      <ul>
+        <li><a href="#">Shipping & Returns</a></li>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 IYVIX Store. All rights reserved.</span>
+    <span>Privacy · Terms · Cookie Policy</span>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const siblings = [...e.target.parentElement.querySelectorAll('.reveal:not(.visible)')];
+        const idx = siblings.indexOf(e.target);
+        setTimeout(() => e.target.classList.add('visible'), Math.min(idx * 90, 360));
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Music — IYVIX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:       #07070a;
+  --ink2:      #0d0d12;
+  --surface:   #111118;
+  --card:      #16161e;
+  --card2:     #1c1c26;
+  --border:    rgba(255,255,255,0.06);
+  --border2:   rgba(255,255,255,0.1);
+  --muted:     rgba(255,255,255,0.38);
+  --text:      rgba(255,255,255,0.85);
+  --white:     #ffffff;
+  --gold:      #c9a84c;
+  --gold-l:    #e8c97a;
+  --crimson:   #e8445a;
+  --crimson-l: #ff6b80;
+  --violet:    #8b5cf6;
+  --violet-l:  #a78bfa;
+  --cyan:      #22d3ee;
+  --radius:    16px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--ink);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* ── CURSOR ── */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--crimson);
+  border-radius: 50%;
+  position: fixed; z-index: 9999;
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  transition: background 0.2s, transform 0.1s;
+  mix-blend-mode: normal;
+}
+.cursor-ring {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(232,68,90,0.45);
+  border-radius: 50%;
+  position: fixed; z-index: 9998;
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 56px; height: 58px;
+  background: rgba(7,7,10,0.82);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--white); text-decoration: none;
+}
+.nav-logo span { color: var(--gold); }
+
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  font-size: 13px; font-weight: 400; letter-spacing: 0.04em;
+  color: var(--muted); text-decoration: none; transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-links a.active { color: var(--crimson-l); }
+
+.nav-right { display: flex; align-items: center; gap: 20px; }
+
+.nav-store {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  text-decoration: none; padding: 7px 18px;
+  border: 1px solid var(--border); border-radius: 980px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.nav-store:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 0;
+  position: relative; overflow: hidden;
+}
+
+/* Animated orb background */
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(100px);
+  animation: orbDrift 12s ease-in-out infinite alternate;
+}
+
+.orb1 {
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(232,68,90,0.18) 0%, transparent 70%);
+  top: -200px; left: -200px;
+  animation-delay: 0s;
+}
+.orb2 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(139,92,246,0.14) 0%, transparent 70%);
+  top: 100px; right: -150px;
+  animation-delay: -4s;
+}
+.orb3 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(34,211,238,0.08) 0%, transparent 70%);
+  bottom: 0; left: 30%;
+  animation-delay: -8s;
+}
+
+@keyframes orbDrift {
+  0%   { transform: translate(0,0) scale(1); }
+  100% { transform: translate(40px,30px) scale(1.1); }
+}
+
+/* Noise texture */
+.hero-grain {
+  position: absolute; inset: 0; z-index: 1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* Big scan line feel */
+.hero-lines {
+  position: absolute; inset: 0; z-index: 1;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255,255,255,0.008) 2px,
+    rgba(255,255,255,0.008) 4px
+  );
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative; z-index: 2;
+  padding: 140px 56px 80px;
+  max-width: 900px;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 300;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--crimson-l);
+  margin-bottom: 28px;
+  opacity: 0; animation: fadeUp 0.6s 0.2s ease forwards;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  display: block; width: 32px; height: 1px;
+  background: var(--crimson);
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(64px, 8vw, 130px);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -3px;
+  color: var(--white);
+  margin-bottom: 32px;
+  opacity: 0; animation: fadeUp 0.9s 0.35s ease forwards;
+}
+
+.hero h1 .line2 {
+  display: block;
+  font-style: italic;
+  background: linear-gradient(135deg, var(--crimson-l), var(--violet-l));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 17px; font-weight: 300;
+  color: var(--muted); line-height: 1.7;
+  max-width: 480px; margin-bottom: 52px;
+  opacity: 0; animation: fadeUp 0.7s 0.52s ease forwards;
+}
+
+.hero-actions {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  opacity: 0; animation: fadeUp 0.6s 0.66s ease forwards;
+}
+
+.btn-crimson {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--crimson), #c0283e);
+  color: #fff; border-radius: 980px;
+  font-size: 14px; font-weight: 500; letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 28px rgba(232,68,90,0.35);
+}
+.btn-crimson:hover { transform: scale(1.03); box-shadow: 0 8px 44px rgba(232,68,90,0.5); }
+
+.btn-ghost-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px;
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border2); border-radius: 980px;
+  font-size: 14px; font-weight: 400;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-ghost-white:hover { border-color: rgba(255,255,255,0.3); color: var(--white); }
+
+/* Hero scroll indicator */
+.scroll-hint {
+  position: absolute; bottom: 40px; right: 56px; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0; animation: fadeIn 1s 1.2s ease forwards;
+}
+.scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.3));
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+.scroll-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); writing-mode: vertical-rl;
+}
+
+@keyframes scrollPulse {
+  0%,100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ── STICKY PLAYER ── */
+.sticky-player {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  z-index: 300;
+  background: rgba(22,22,30,0.92);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 16px 28px;
+  display: flex; align-items: center; gap: 28px;
+  min-width: 560px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.sticky-player.visible { transform: translateX(-50%) translateY(0); }
+
+.player-art {
+  width: 44px; height: 44px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--crimson), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  position: relative; overflow: hidden;
+}
+
+.player-art.playing::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 8px;
+  box-shadow: 0 0 0 3px rgba(232,68,90,0.4);
+  animation: playerPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes playerPulse {
+  0%,100% { box-shadow: 0 0 0 3px rgba(232,68,90,0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(232,68,90,0); }
+}
+
+.player-info { flex: 1; min-width: 0; }
+
+.player-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px; font-weight: 400;
+  color: var(--white); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.player-artist {
+  font-size: 11px; font-weight: 300;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.06em;
+}
+
+.player-controls {
+  display: flex; align-items: center; gap: 20px;
+}
+
+.ctrl-btn {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--muted); font-size: 14px;
+  border-radius: 50%;
+  transition: color 0.2s, background 0.2s;
+}
+.ctrl-btn:hover { color: var(--white); background: rgba(255,255,255,0.07); }
+
+.ctrl-play {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--crimson), #c0283e);
+  border: none; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 16px; color: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(232,68,90,0.4);
+}
+.ctrl-play:hover { transform: scale(1.08); box-shadow: 0 6px 30px rgba(232,68,90,0.55); }
+
+.player-progress {
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0; width: 180px;
+}
+
+.progress-bar {
+  flex: 1; height: 3px; background: rgba(255,255,255,0.12);
+  border-radius: 2px; cursor: pointer; position: relative;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--crimson), var(--violet-l));
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+.player-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 300;
+  color: var(--muted); white-space: nowrap;
+}
+
+/* ── WAVEFORM DIVIDER ── */
+.waveform-divider {
+  display: flex; align-items: center;
+  padding: 0 56px; gap: 4px;
+  height: 48px;
+  background: var(--ink2);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.wave-bar {
+  flex: 1; max-width: 4px;
+  background: var(--crimson);
+  border-radius: 2px;
+  opacity: 0.3;
+  animation: waveAnim var(--dur, 1.2s) ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0s);
+  min-height: 4px;
+}
+
+@keyframes waveAnim {
+  0%   { height: 6px; opacity: 0.2; }
+  100% { height: var(--h, 30px); opacity: 0.6; }
+}
+
+/* ── FEATURED ALBUM ── */
+.featured-album {
+  padding: 100px 56px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+  max-width: 1280px; margin: 0 auto;
+}
+
+.album-art-wrap {
+  position: relative;
+}
+
+.album-cover {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #1a0a12 0%, #2d0a1e 40%, #0a0a2a 100%);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,0.8), 0 0 80px rgba(232,68,90,0.15);
+  transition: transform 0.4s ease;
+}
+.album-art-wrap:hover .album-cover { transform: rotate(-2deg) scale(1.02); }
+
+.album-cover::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 30% 30%, rgba(232,68,90,0.3), transparent 60%),
+    radial-gradient(ellipse 50% 50% at 70% 70%, rgba(139,92,246,0.2), transparent 60%);
+}
+
+.album-cover-art {
+  font-size: 120px;
+  position: relative; z-index: 1;
+  filter: drop-shadow(0 0 40px rgba(232,68,90,0.5));
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-16px) rotate(3deg); }
+}
+
+.album-cover-title {
+  position: absolute; bottom: 28px; left: 28px; right: 28px; z-index: 2;
+}
+
+.album-cover-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 600;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: -0.3px; line-height: 1.1;
+}
+
+.album-cover-year {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.12em;
+  margin-top: 4px;
+}
+
+/* Floating vinyl */
+.vinyl {
+  position: absolute; top: 10%; right: -18%;
+  width: 72%; aspect-ratio: 1;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    #111 0deg, #1a1a1a 2deg, #111 4deg
+  );
+  box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+  z-index: -1;
+  transition: transform 0.4s ease;
+  animation: spin 8s linear infinite;
+  animation-play-state: paused;
+}
+.vinyl.spinning { animation-play-state: running; }
+.vinyl::after {
+  content: '';
+  position: absolute; inset: 38%;
+  border-radius: 50%;
+  background: #1a1a1a;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.06);
+}
+.album-art-wrap:hover .vinyl { right: -20%; transform: scale(1.02); }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.album-info {}
+
+.album-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 14px;
+  background: rgba(232,68,90,0.1);
+  border: 1px solid rgba(232,68,90,0.3);
+  border-radius: 980px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--crimson-l);
+  margin-bottom: 24px;
+}
+
+.album-tag-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--crimson); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.6)} }
+
+.album-info h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(38px, 4vw, 62px);
+  font-weight: 300; line-height: 1.06;
+  letter-spacing: -1px; color: var(--white);
+  margin-bottom: 8px;
+}
+.album-info h2 em { font-style: italic; background: linear-gradient(135deg, var(--crimson-l), var(--violet-l)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.album-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; font-weight: 300;
+  color: var(--muted); letter-spacing: 0.06em;
+  margin-bottom: 28px;
+}
+
+.album-desc {
+  font-size: 15px; font-weight: 300;
+  color: var(--muted); line-height: 1.75;
+  margin-bottom: 36px; max-width: 440px;
+}
+
+/* Tracklist preview */
+.tracklist {
+  margin-bottom: 40px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.track-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 13px 18px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+  position: relative;
+}
+.track-item:last-child { border-bottom: none; }
+.track-item:hover { background: rgba(255,255,255,0.04); }
+.track-item.playing { background: rgba(232,68,90,0.07); }
+
+.track-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 300;
+  color: var(--muted); width: 20px; text-align: center;
+  flex-shrink: 0;
+}
+
+.track-item.playing .track-num { color: var(--crimson-l); }
+
+.track-play-icon {
+  width: 20px; text-align: center; flex-shrink: 0;
+  font-size: 11px; color: var(--muted);
+  display: none;
+}
+.track-item:hover .track-play-icon { display: block; }
+.track-item:hover .track-num { display: none; }
+
+.track-info { flex: 1; min-width: 0; }
+
+.track-name {
+  font-size: 14px; font-weight: 400;
+  color: var(--text); margin-bottom: 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.track-item.playing .track-name { color: var(--crimson-l); }
+
+.track-genre {
+  font-size: 11px; font-weight: 300;
+  color: var(--muted); letter-spacing: 0.03em;
+}
+
+.track-duration {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--muted);
+  flex-shrink: 0;
+}
+
+.track-price-pill {
+  padding: 3px 10px;
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 980px;
+  font-size: 10px; font-weight: 500;
+  color: var(--gold-l);
+  flex-shrink: 0;
+}
+
+.track-item.playing .track-price-pill {
+  background: rgba(232,68,90,0.12);
+  border-color: rgba(232,68,90,0.3);
+  color: var(--crimson-l);
+}
+
+.album-purchase {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+
+.album-price-block {}
+.album-price-label { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+.album-price-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px; font-weight: 300;
+  color: var(--gold-l); letter-spacing: -0.5px;
+}
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0; overflow: hidden; white-space: nowrap;
+  background: var(--ink2);
+}
+.marquee-inner {
+  display: inline-block;
+  animation: marquee 24s linear infinite;
+}
+.marquee-inner span {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; letter-spacing: 0.08em;
+  color: var(--muted); margin: 0 40px;
+  text-transform: uppercase;
+}
+.marquee-inner strong { color: var(--crimson-l); font-weight: 400; }
+@keyframes marquee { 0%{transform:translateX(0)}100%{transform:translateX(-50%)} }
+
+/* ── CATALOGUE SECTION ── */
+.music-catalogue {
+  padding: 80px 56px 120px;
+  max-width: 1280px; margin: 0 auto;
+}
+
+.cat-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 48px;
+}
+
+.cat-title-group {}
+.cat-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 300;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 10px;
+}
+.cat-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(32px, 3.5vw, 48px);
+  font-weight: 300; color: var(--white);
+  letter-spacing: -0.5px; line-height: 1.1;
+}
+.cat-title em { font-style: italic; color: var(--crimson-l); }
+
+/* Filter tabs */
+.filter-tabs {
+  display: flex; gap: 8px;
+}
+.ftab {
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 980px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 400;
+  color: var(--muted); cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.ftab:hover { border-color: var(--border2); color: var(--text); }
+.ftab.active {
+  background: rgba(232,68,90,0.1);
+  border-color: rgba(232,68,90,0.4);
+  color: var(--crimson-l);
+}
+
+/* Album grid */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.acard {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.acard:hover { transform: translateY(-6px); }
+
+.acard-cover {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 60px;
+  margin-bottom: 16px;
+  position: relative; overflow: hidden;
+  transition: box-shadow 0.3s;
+}
+.acard:hover .acard-cover { box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+
+.acard-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.25s;
+  border-radius: 14px;
+}
+.acard:hover .acard-overlay { opacity: 1; }
+
+.overlay-play {
+  width: 52px; height: 52px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff;
+  border: 1px solid rgba(255,255,255,0.25);
+  transition: transform 0.2s, background 0.2s;
+}
+.acard:hover .overlay-play { transform: scale(1.08); background: rgba(232,68,90,0.4); }
+
+.acard-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 400;
+  color: var(--white); margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.acard-meta {
+  font-size: 12px; font-weight: 300;
+  color: var(--muted); margin-bottom: 12px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.04em;
+}
+
+.acard-footer {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.acard-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px; font-weight: 400;
+  color: var(--gold-l);
+}
+
+.acard-buy {
+  padding: 7px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 980px;
+  font-size: 12px; font-weight: 400;
+  color: var(--text); cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  transition: background 0.2s, border-color 0.2s;
+}
+.acard-buy:hover { background: rgba(232,68,90,0.15); border-color: rgba(232,68,90,0.4); color: var(--crimson-l); }
+
+/* ── LICENSING SECTION ── */
+.licensing {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 100px 56px;
+}
+
+.licensing-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 80px; align-items: start;
+}
+
+.lic-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; font-weight: 300;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 20px;
+}
+
+.licensing h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(36px, 3.5vw, 52px);
+  font-weight: 300; color: var(--white);
+  letter-spacing: -0.5px; line-height: 1.1;
+}
+.licensing h2 em { font-style: italic; color: var(--violet-l); }
+
+.lic-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.lic-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  position: relative; overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+  cursor: pointer;
+}
+.lic-card:hover { transform: translateY(-4px); border-color: var(--border2); }
+
+.lic-card.popular {
+  border-color: rgba(232,68,90,0.3);
+  background: linear-gradient(160deg, rgba(232,68,90,0.05), var(--card));
+}
+
+.lic-popular-badge {
+  position: absolute; top: 16px; right: 16px;
+  padding: 3px 10px;
+  background: rgba(232,68,90,0.15);
+  border: 1px solid rgba(232,68,90,0.35);
+  border-radius: 980px;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--crimson-l);
+}
+
+.lic-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+
+.lic-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 400;
+  color: var(--white); margin-bottom: 6px;
+}
+
+.lic-desc {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted); line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.lic-features {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 24px;
+}
+
+.lic-feature {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 300; color: var(--text);
+}
+
+.lic-feature::before {
+  content: '✓';
+  font-size: 11px; color: var(--crimson-l);
+  font-weight: 500;
+}
+
+.lic-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px; font-weight: 300;
+  color: var(--gold-l);
+}
+.lic-price span {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 300;
+  color: var(--muted);
+}
+
+/* ── NEWSLETTER / COMMUNITY ── */
+.community {
+  padding: 120px 56px;
+  text-align: center;
+  position: relative; overflow: hidden;
+  max-width: 1280px; margin: 0 auto;
+}
+
+.community::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 70% at 50% 50%, rgba(232,68,90,0.06), transparent 60%);
+}
+
+.community h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(40px, 5vw, 72px);
+  font-weight: 300; letter-spacing: -1.5px;
+  line-height: 1.05; color: var(--white);
+  max-width: 640px; margin: 0 auto 24px;
+  position: relative;
+}
+.community h2 em { font-style: italic; background: linear-gradient(135deg, var(--crimson-l), var(--violet-l)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.community p {
+  font-size: 16px; font-weight: 300;
+  color: var(--muted); max-width: 400px;
+  margin: 0 auto 48px; line-height: 1.7; position: relative;
+}
+
+.email-row {
+  display: flex; gap: 12px; justify-content: center;
+  max-width: 440px; margin: 0 auto; position: relative;
+}
+
+.email-input {
+  flex: 1; padding: 14px 20px;
+  background: var(--card2);
+  border: 1px solid var(--border2); border-radius: 980px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 300;
+  color: var(--white); outline: none;
+  transition: border-color 0.2s;
+}
+.email-input::placeholder { color: var(--muted); }
+.email-input:focus { border-color: rgba(232,68,90,0.5); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 60px 56px 36px;
+  background: var(--ink2);
+}
+
+.footer-row {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1280px; margin: 0 auto 48px;
+}
+
+.footer-brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--white);
+}
+.footer-brand span { color: var(--gold); }
+
+.footer-links {
+  display: flex; gap: 36px; list-style: none;
+}
+.footer-links a {
+  font-size: 13px; font-weight: 300;
+  color: var(--muted); text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+
+.footer-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 24px; max-width: 1280px; margin: 0 auto;
+  display: flex; justify-content: space-between;
+  font-size: 12px; font-weight: 300; color: rgba(255,255,255,0.2);
+}
+
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .featured-album { grid-template-columns: 1fr; gap: 48px; padding: 80px 32px; }
+  .album-art-wrap { max-width: 440px; margin: 0 auto; }
+  .album-grid { grid-template-columns: repeat(3,1fr); }
+  .licensing-inner { grid-template-columns: 1fr; gap: 40px; }
+  .music-catalogue { padding: 80px 32px 100px; }
+  .licensing { padding: 80px 32px; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  .hero-content { padding: 120px 24px 60px; }
+  .album-grid { grid-template-columns: repeat(2,1fr); }
+  .lic-grid { grid-template-columns: 1fr; }
+  .sticky-player { min-width: calc(100vw - 48px); flex-wrap: wrap; }
+  .player-progress { width: 100%; order: 10; }
+  .scroll-hint { display: none; }
+  .waveform-divider { padding: 0 24px; }
+  .filter-tabs { flex-wrap: wrap; }
+  .community { padding: 80px 24px; }
+  .email-row { flex-direction: column; }
+  footer { padding: 48px 24px 32px; }
+  .footer-row { flex-direction: column; gap: 24px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+}
+
+@media (max-width: 480px) {
+  .album-grid { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">IYV<span>IX</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="catalogue.html">Shop</a></li>
+    <li><a href="music.html" class="active">Music</a></li>
+    <li><a href="index.html#books">Books</a></li>
+    <li><a href="#">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <a class="nav-store" href="catalogue.html">Full Store →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div class="hero-grain"></div>
+  <div class="hero-lines"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">IYVIX Sound · Original Music</div>
+    <h1>
+      Sound is
+      <span class="line2">architecture.</span>
+    </h1>
+    <p class="hero-sub">Original compositions, scored soundscapes, and produced records — made to move through you. Every release available for purchase, licensing, and download.</p>
+    <div class="hero-actions">
+      <a href="#featured" class="btn-crimson">
+        <span>▶</span> Listen & Buy
+      </a>
+      <a href="#catalogue" class="btn-ghost-white">Browse Catalogue</a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+</section>
+
+<!-- WAVEFORM DIVIDER -->
+<div class="waveform-divider" id="waveDiv"></div>
+
+<!-- STICKY PLAYER -->
+<div class="sticky-player" id="stickyPlayer">
+  <div class="player-art" id="playerArt">🌙</div>
+  <div class="player-info">
+    <div class="player-title" id="playerTitle">Midnight Architectures</div>
+    <div class="player-artist">IYVIX Sound · 2025</div>
+  </div>
+  <div class="player-controls">
+    <button class="ctrl-btn" onclick="prevTrack()" title="Previous">⏮</button>
+    <button class="ctrl-play" id="playBtn" onclick="togglePlay()">▶</button>
+    <button class="ctrl-btn" onclick="nextTrack()" title="Next">⏭</button>
+  </div>
+  <div class="player-progress">
+    <span class="player-time" id="playerTime">0:00</span>
+    <div class="progress-bar" id="progressBar" onclick="seekTrack(event)">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <span class="player-time" id="playerDuration">3:47</span>
+  </div>
+</div>
+
+<!-- FEATURED ALBUM -->
+<section class="featured-album" id="featured">
+  <div class="album-art-wrap reveal">
+    <div class="vinyl" id="vinylDisc"></div>
+    <div class="album-cover">
+      <span class="album-cover-art">🌙</span>
+      <div class="album-cover-title">
+        <div class="album-cover-name">Midnight Architectures</div>
+        <div class="album-cover-year">IYVIX SOUND · 2025 · 10 TRACKS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="album-info reveal">
+    <div class="album-tag"><span class="album-tag-dot"></span> Latest Release</div>
+    <h2>Midnight<br><em>Architectures</em></h2>
+    <p class="album-meta">10 TRACKS · 47 MIN · AMBIENT / ELECTRONIC / CINEMATIC</p>
+    <p class="album-desc">A full-length record built from silence outward. Layered atmospheres, deliberate percussion, and melodic structures designed to accompany deep focus, creative work, and the hour before sleep.</p>
+
+    <div class="tracklist" id="tracklist">
+      <div class="track-item" data-index="0" onclick="playTrack(0)">
+        <span class="track-num">01</span>
+        <span class="track-play-icon">▶</span>
+        <div class="track-info">
+          <div class="track-name">Threshold</div>
+          <div class="track-genre">Ambient · Intro</div>
+        </div>
+        <span class="track-duration">2:18</span>
+        <span class="track-price-pill">$1.29</span>
+      </div>
+      <div class="track-item" data-index="1" onclick="playTrack(1)">
+        <span class="track-num">02</span>
+        <span class="track-play-icon">▶</span>
+        <div class="track-info">
+          <div class="track-name">Glass Meridian</div>
+          <div class="track-genre">Electronic · Drone</div>
+        </div>
+        <span class="track-duration">4:52</span>
+        <span class="track-price-pill">$1.29</span>
+      </div>
+      <div class="track-item" data-index="2" onclick="playTrack(2)">
+        <span class="track-num">03</span>
+        <span class="track-play-icon">▶</span>
+        <div class="track-info">
+          <div class="track-name">Midnight Architectures</div>
+          <div class="track-genre">Cinematic · Title Track</div>
+        </div>
+        <span class="track-duration">5:41</span>
+        <span class="track-price-pill">$1.29</span>
+      </div>
+      <div class="track-item" data-index="3" onclick="playTrack(3)">
+        <span class="track-num">04</span>
+        <span class="track-play-icon">▶</span>
+        <div class="track-info">
+          <div class="track-name">Obsidian Hours</div>
+          <div class="track-genre">Ambient · Deep Focus</div>
+        </div>
+        <span class="track-duration">6:03</span>
+        <span class="track-price-pill">$1.29</span>
+      </div>
+      <div class="track-item" data-index="4" onclick="playTrack(4)">
+        <span class="track-num">05</span>
+        <span class="track-play-icon">▶</span>
+        <div class="track-info">
+          <div class="track-name">Lucid Cartography</div>
+          <div class="track-genre">Electronic · Rhythmic</div>
+        </div>
+        <span class="track-duration">4:29</span>
+        <span class="track-price-pill">$1.29</span>
+      </div>
+    </div>
+
+    <div class="album-purchase">
+      <div class="album-price-block">
+        <div class="album-price-label">Full Album</div>
+        <div class="album-price-val">$9.99</div>
+      </div>
+      <a href="#" class="btn-crimson" onclick="showPlayer()">
+        <span>↓</span> Buy & Download
+      </a>
+      <a href="#licensing" class="btn-ghost-white">License This</a>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <span>♩ <strong>New Release</strong> — Midnight Architectures</span>
+    <span>♩ Available in <strong>WAV · FLAC · MP3</strong></span>
+    <span>♩ <strong>Sync Licensing</strong> Available</span>
+    <span>♩ <strong>Beats & Instrumentals</strong> for Purchase</span>
+    <span>♩ Instant Digital Download</span>
+    <span>♩ <strong>Exclusive</strong> Stems for Producers</span>
+    <span>♩ <strong>New Release</strong> — Midnight Architectures</span>
+    <span>♩ Available in <strong>WAV · FLAC · MP3</strong></span>
+    <span>♩ <strong>Sync Licensing</strong> Available</span>
+    <span>♩ <strong>Beats & Instrumentals</strong> for Purchase</span>
+    <span>♩ Instant Digital Download</span>
+    <span>♩ <strong>Exclusive</strong> Stems for Producers</span>
+  </div>
+</div>
+
+<!-- CATALOGUE -->
+<section class="music-catalogue" id="catalogue">
+  <div class="cat-header reveal">
+    <div class="cat-title-group">
+      <p class="cat-eyebrow">All Releases</p>
+      <h2 class="cat-title">The full <em>catalogue.</em></h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="ftab active" onclick="filterMusic(this,'all')">All</button>
+      <button class="ftab" onclick="filterMusic(this,'ambient')">Ambient</button>
+      <button class="ftab" onclick="filterMusic(this,'electronic')">Electronic</button>
+      <button class="ftab" onclick="filterMusic(this,'cinematic')">Cinematic</button>
+      <button class="ftab" onclick="filterMusic(this,'beats')">Beats</button>
+    </div>
+  </div>
+
+  <div class="album-grid" id="albumGrid">
+
+    <div class="acard reveal" data-genre="ambient cinematic" onclick="selectAlbum(this, '🌙','Midnight Architectures','Track 01 — Threshold')">
+      <div class="acard-cover" style="background:linear-gradient(135deg,#1a0a12,#0a0a2a)">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 40% 40%,rgba(232,68,90,0.25),transparent)"></div>
+        <span style="position:relative;z-index:1">🌙</span>
+        <div class="acard-overlay"><div class="overlay-play">▶</div></div>
+      </div>
+      <div class="acard-title">Midnight Architectures</div>
+      <div class="acard-meta">2025 · 10 TRACKS · AMBIENT</div>
+      <div class="acard-footer">
+        <span class="acard-price">$9.99</span>
+        <button class="acard-buy">Buy</button>
+      </div>
+    </div>
+
+    <div class="acard reveal" data-genre="electronic beats" onclick="selectAlbum(this,'🔥','Ember Frequencies','Beat 01 — Ignition')">
+      <div class="acard-cover" style="background:linear-gradient(135deg,#1e0a0a,#2a0a12)">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 60% 40%,rgba(255,120,50,0.25),transparent)"></div>
+        <span style="position:relative;z-index:1">🔥</span>
+        <div class="acard-overlay"><div class="overlay-play">▶</div></div>
+      </div>
+      <div class="acard-title">Ember Frequencies</div>
+      <div class="acard-meta">2025 · 8 TRACKS · ELECTRONIC</div>
+      <div class="acard-footer">
+        <span class="acard-price">$7.99</span>
+        <button class="acard-buy">Buy</button>
+      </div>
+    </div>
+
+    <div class="acard reveal" data-genre="cinematic ambient" onclick="selectAlbum(this,'🌊','Deep Cartography','Track 01 — Bathyal')">
+      <div class="acard-cover" style="background:linear-gradient(135deg,#0a1020,#0a1a2a)">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(34,211,238,0.18),transparent)"></div>
+        <span style="position:relative;z-index:1">🌊</span>
+        <div class="acard-overlay"><div class="overlay-play">▶</div></div>
+      </div>
+      <div class="acard-title">Deep Cartography</div>
+      <div class="acard-meta">2024 · 12 TRACKS · CINEMATIC</div>
+      <div class="acard-footer">
+        <span class="acard-price">$11.99</span>
+        <button class="acard-buy">Buy</button>
+      </div>
+    </div>
+
+    <div class="acard reveal" data-genre="beats electronic" onclick="selectAlbum(this,'⚡','Voltage Sessions','Beat 01 — Arc Flash')">
+      <div class="acard-cover" style="background:linear-gradient(135deg,#14100a,#201a0a)">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 40%,rgba(255,220,50,0.18),transparent)"></div>
+        <span style="position:relative;z-index:1">⚡</span>
+        <div class="acard-overlay"><div class="overlay-play">▶</div></div>
+      </div>
+      <div class="acard-title">Voltage Sessions</div>
+      <div class="acard-meta">2024 · 14 BEATS · HIP-HOP / TRAP</div>
+      <div class="acard-footer">
+        <span class="acard-price">$14.99</span>
+        <button class="acard-buy">Buy</button>
+      </div>
+    </div>
+
+    <div class="acard reveal" data-genre="ambient cinematic" onclick="selectAlbum(this,'🌿','Verdant Hours','Track 01 — Canopy')">
+      <div class="acard-cover" style="background:linear-gradient(135deg,#0a1a0e,#0e2014)">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 40% 60%,rgba(80,220,100,0.15),transparent)"></div>
+        <span style="position:relative;z-index:1">🌿</span>
+        <div class="acard-overlay"><div class="overlay-play">▶</div></div>
+      </div>
+      <div class="acard-title">Verdant Hours</div>
+      <div class="acard-meta">2024 · 9 TRACKS · NATURE / AMBIENT</div>
+      <div class="acard-footer">
+        <span class="acard-price">$8.99</span>
+        <button class="acard-buy">Buy</button>
+      </div>
+    </div>
+
+    <div class="acard reveal" data-genre="electronic cinematic" onclick="selectAlbum(this,'🪐','Orbital Drift','Track 01 — Aphelion')">
+      <div class="acard-cover" style="background:linear-gradient(135deg,#10081e,#14102a)">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(139,92,246,0.2),transparent)"></div>
+        <span style="position:relative;z-index:1">🪐</span>
+        <div class="acard-overlay"><div class="overlay-play">▶</div></div>
+      </div>
+      <div class="acard-title">Orbital Drift</div>
+      <div class="acard-meta">2023 · 11 TRACKS · SPACE / ELECTRONIC</div>
+      <div class="acard-footer">
+        <span class="acard-price">$10.99</span>
+        <button class="acard-buy">Buy</button>
+      </div>
+    </div>
+
+    <div class="acard reveal" data-genre="beats electronic" onclick="selectAlbum(this,'🩸','Scarlet Tape Vol. I','Beat 01 — Arterial')">
+      <div class="acard-cover" style="background:linear-gradient(135deg,#1a0808,#280808)">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(200,30,30,0.2),transparent)"></div>
+        <span style="position:relative;z-index:1">🩸</span>
+        <div class="acard-overlay"><div class="overlay-play">▶</div></div>
+      </div>
+      <div class="acard-title">Scarlet Tape Vol. I</div>
+      <div class="acard-meta">2023 · 16 BEATS · DARK / TRAP</div>
+      <div class="acard-footer">
+        <span class="acard-price">$16.99</span>
+        <button class="acard-buy">Buy</button>
+      </div>
+    </div>
+
+    <div class="acard reveal" data-genre="cinematic ambient" onclick="selectAlbum(this,'❄️','White Silence EP','Track 01 — Permafrost')">
+      <div class="acard-cover" style="background:linear-gradient(135deg,#10141e,#161c26)">
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 40%,rgba(200,220,255,0.12),transparent)"></div>
+        <span style="position:relative;z-index:1">❄️</span>
+        <div class="acard-overlay"><div class="overlay-play">▶</div></div>
+      </div>
+      <div class="acard-title">White Silence EP</div>
+      <div class="acard-meta">2023 · 5 TRACKS · CINEMATIC EP</div>
+      <div class="acard-footer">
+        <span class="acard-price">$4.99</span>
+        <button class="acard-buy">Buy</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LICENSING -->
+<section class="licensing" id="licensing">
+  <div class="licensing-inner">
+    <div class="reveal">
+      <p class="lic-label">Use Our Music</p>
+      <h2>License for<br><em>any project.</em></h2>
+    </div>
+    <div class="lic-grid">
+      <div class="lic-card reveal">
+        <span class="lic-icon">🎬</span>
+        <div class="lic-name">Content License</div>
+        <p class="lic-desc">YouTube, podcasts, social media. One track, unlimited uploads on your channel.</p>
+        <div class="lic-features">
+          <div class="lic-feature">Monetized YouTube/Social</div>
+          <div class="lic-feature">Podcast episodes</div>
+          <div class="lic-feature">Non-commercial film</div>
+        </div>
+        <div class="lic-price">$29 <span>/ track</span></div>
+      </div>
+      <div class="lic-card popular reveal">
+        <div class="lic-popular-badge">Most Popular</div>
+        <span class="lic-icon">📺</span>
+        <div class="lic-name">Sync License</div>
+        <p class="lic-desc">Film, TV, ads, and branded content. Full sync rights for one production.</p>
+        <div class="lic-features">
+          <div class="lic-feature">Commercial film & TV</div>
+          <div class="lic-feature">Advertising campaigns</div>
+          <div class="lic-feature">Branded content</div>
+        </div>
+        <div class="lic-price">$149 <span>/ track</span></div>
+      </div>
+      <div class="lic-card reveal">
+        <span class="lic-icon">🎮</span>
+        <div class="lic-name">Game & App</div>
+        <p class="lic-desc">Video games, mobile apps, interactive media. Unlimited installs.</p>
+        <div class="lic-features">
+          <div class="lic-feature">Mobile & console games</div>
+          <div class="lic-feature">Interactive apps</div>
+          <div class="lic-feature">Perpetual license</div>
+        </div>
+        <div class="lic-price">$199 <span>/ track</span></div>
+      </div>
+      <div class="lic-card reveal">
+        <span class="lic-icon">🌐</span>
+        <div class="lic-name">Exclusive Rights</div>
+        <p class="lic-desc">Full ownership transfer. The track becomes yours, removed from our catalogue.</p>
+        <div class="lic-features">
+          <div class="lic-feature">Full ownership transfer</div>
+          <div class="lic-feature">Removed from all platforms</div>
+          <div class="lic-feature">Stems & project files included</div>
+        </div>
+        <div class="lic-price">$799+ <span>/ track</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY / NEWSLETTER -->
+<section class="community">
+  <h2>Hear it <em>first.</em></h2>
+  <p>New drops, exclusive previews, and free tracks for subscribers. No noise — only signal.</p>
+  <div class="email-row">
+    <input class="email-input" type="email" placeholder="your@email.com">
+    <a href="#" class="btn-crimson">Subscribe</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-row">
+    <div class="footer-brand">IYV<span>IX</span></div>
+    <ul class="footer-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="catalogue.html">Shop</a></li>
+      <li><a href="music.html">Music</a></li>
+      <li><a href="index.html#books">Books</a></li>
+      <li><a href="#licensing">Licensing</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 IYVIX Sound. All rights reserved. All music is original intellectual property.</span>
+    <span>Privacy · Terms · Licensing Policy</span>
+  </div>
+</footer>
+
+<script>
+/* ── CUSTOM CURSOR ── */
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursorRing');
+let mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', e => {
+  mx=e.clientX; my=e.clientY;
+  cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+
+/* ── WAVEFORM ── */
+const waveDiv = document.getElementById('waveDiv');
+const barCount = Math.floor(window.innerWidth / 6);
+const heights = [8,14,22,30,38,44,36,28,18,10,16,28,40,48,36,24,12,8,20,34,44,38,26,14,10,18,30,42,48,40,28,16];
+for(let i=0; i<barCount; i++){
+  const bar = document.createElement('div');
+  bar.className = 'wave-bar';
+  const h = heights[i % heights.length];
+  bar.style.setProperty('--h', h+'px');
+  bar.style.setProperty('--dur', (0.8 + Math.random()*1.4).toFixed(2)+'s');
+  bar.style.setProperty('--delay', (Math.random()*1.2).toFixed(2)+'s');
+  waveDiv.appendChild(bar);
+}
+
+/* ── PLAYER STATE ── */
+const tracks = [
+  { title: 'Threshold', emoji: '🌙', duration: '2:18', seconds: 138 },
+  { title: 'Glass Meridian', emoji: '🌙', duration: '4:52', seconds: 292 },
+  { title: 'Midnight Architectures', emoji: '🌙', duration: '5:41', seconds: 341 },
+  { title: 'Obsidian Hours', emoji: '🌙', duration: '6:03', seconds: 363 },
+  { title: 'Lucid Cartography', emoji: '🌙', duration: '4:29', seconds: 269 },
+];
+
+let currentTrack = 0;
+let isPlaying = false;
+let progress = 0;
+let ticker = null;
+
+function updatePlayerUI(){
+  const t = tracks[currentTrack];
+  document.getElementById('playerTitle').textContent = t.title;
+  document.getElementById('playerArt').textContent = t.emoji;
+  document.getElementById('playerDuration').textContent = t.duration;
+  document.getElementById('playBtn').textContent = isPlaying ? '⏸' : '▶';
+  document.getElementById('playerArt').classList.toggle('playing', isPlaying);
+
+  // Vinyl
+  document.getElementById('vinylDisc').classList.toggle('spinning', isPlaying);
+
+  // Waveform active
+  document.querySelectorAll('.wave-bar').forEach(b => {
+    b.style.opacity = isPlaying ? null : '0.2';
+    b.style.animationPlayState = isPlaying ? 'running' : 'paused';
+  });
+
+  // Tracklist highlight
+  document.querySelectorAll('.track-item').forEach((item, i) => {
+    item.classList.toggle('playing', i === currentTrack && isPlaying);
+  });
+}
+
+function togglePlay(){
+  isPlaying = !isPlaying;
+  showPlayer();
+  if(isPlaying){
+    ticker = setInterval(tickProgress, 500);
+  } else {
+    clearInterval(ticker);
+  }
+  updatePlayerUI();
+}
+
+function playTrack(idx){
+  currentTrack = idx;
+  isPlaying = true;
+  progress = 0;
+  showPlayer();
+  clearInterval(ticker);
+  ticker = setInterval(tickProgress, 500);
+  updatePlayerUI();
+}
+
+function prevTrack(){
+  currentTrack = (currentTrack - 1 + tracks.length) % tracks.length;
+  progress = 0;
+  if(isPlaying){ clearInterval(ticker); ticker = setInterval(tickProgress,500); }
+  updatePlayerUI();
+}
+
+function nextTrack(){
+  currentTrack = (currentTrack + 1) % tracks.length;
+  progress = 0;
+  if(isPlaying){ clearInterval(ticker); ticker = setInterval(tickProgress,500); }
+  updatePlayerUI();
+}
+
+function tickProgress(){
+  const t = tracks[currentTrack];
+  progress = Math.min(progress + 0.5/t.seconds, 1);
+  document.getElementById('progressFill').style.width = (progress*100)+'%';
+  const elapsed = Math.floor(progress * t.seconds);
+  document.getElementById('playerTime').textContent = fmt(elapsed);
+  if(progress >= 1){ nextTrack(); progress = 0; }
+}
+
+function seekTrack(e){
+  const bar = document.getElementById('progressBar');
+  const rect = bar.getBoundingClientRect();
+  progress = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  document.getElementById('progressFill').style.width = (progress*100)+'%';
+}
+
+function fmt(s){ return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60; }
+
+function showPlayer(){
+  document.getElementById('stickyPlayer').classList.add('visible');
+}
+
+function selectAlbum(el, emoji, title, trackName){
+  document.getElementById('playerArt').textContent = emoji;
+  document.getElementById('playerTitle').textContent = trackName;
+  isPlaying = true; progress = 0;
+  showPlayer();
+  clearInterval(ticker);
+  ticker = setInterval(tickProgress, 500);
+  document.getElementById('playBtn').textContent = '⏸';
+  document.getElementById('playerArt').classList.add('playing');
+  document.getElementById('vinylDisc').classList.add('spinning');
+}
+
+/* ── MUSIC FILTER ── */
+function filterMusic(btn, genre){
+  document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.acard').forEach(card => {
+    if(genre === 'all' || card.dataset.genre.includes(genre)){
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+/* ── SCROLL REVEAL ── */
+const reveals = document.querySelectorAll('.reveal');
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const siblings = [...e.target.parentElement.querySelectorAll('.reveal:not(.visible)')];
+      const idx = siblings.indexOf(e.target);
+      setTimeout(()=> e.target.classList.add('visible'), Math.min(idx*85, 340));
+      revObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+reveals.forEach(el => revObs.observe(el));
+
+/* Init */
+updatePlayerUI();
+</script>
+</body>
+</html>
